@@ -1,7 +1,5 @@
 import { Redis, s } from '@upstash/redis';
 
-const redis = Redis.fromEnv();
-
 /**
  * Creates the search index if it does not exist yet, and returns it.
  *
@@ -9,6 +7,8 @@ const redis = Redis.fromEnv();
  * be searched by meaning without an embedding provider or API key.
  */
 export async function getIndex() {
+  const redis = Redis.fromEnv();
+
   return await redis.search.createIndex({
     name: 'products',
     dataType: 'json',
@@ -47,6 +47,7 @@ export async function insertTestData(index) {
   // Generate ID as combination of time and randomness
   const id = `${new Date().getTime().toString(16)}${Math.round(Math.random() * 1000000000).toString(16)}`;
 
+  const redis = Redis.fromEnv();
   await redis.json.set(`product:${id}`, '$', {
     name,
     description: `${item} in category ${category} priced at ${price}€`,
